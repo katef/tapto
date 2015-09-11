@@ -90,28 +90,20 @@ starttest(struct ast_test **head, const char *line, int a, int b)
 void
 usage(void)
 {
-	fprintf(stderr, "usage: tap2xml [-d <dir>]\n");
-	fprintf(stderr, "       tap2xml [-h]\n");
+	fprintf(stderr, "usage: tap2xml [-h]\n");
 }
 
 int
 main(int argc, char *argv[])
 {
 	struct ast_test *tests;
-	const char *dir;
 	int a, b;
-
-	dir = ".";
 
 	{
 		int c;
 
-		while (c = getopt(argc, argv, "d:h"), c != -1) {
+		while (c = getopt(argc, argv, "h"), c != -1) {
 			switch (c) {
-			case 'd':
-				dir = optarg;
-				break;
-
 			case 'h':
 				usage();
 				return 0;
@@ -176,6 +168,7 @@ main(int argc, char *argv[])
 
 		if (a < b) {
 printf("missing: %d..%d\n", a, b);
+			/* TODO: populate "not ok" AST nodes for these */
 		}
 
 	}
@@ -208,18 +201,6 @@ printf("missing: %d..%d\n", a, b);
 		}
 
 		printf("</tap>\n");
-	}
-
-	{
-		if (-1 == mkdir(dir, 0777) && errno != EEXIST) {
-			perror(dir);
-			return 1;
-		}
-
-		if (-1 == chdir(dir)) {
-			perror(dir);
-			return -1;
-		}
 	}
 
 	return 0;
