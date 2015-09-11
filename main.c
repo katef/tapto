@@ -125,6 +125,8 @@ main(int argc, char *argv[])
 		return 1;
 	}
 
+	tests = NULL;
+
 	{
 		char *line, *comment;
 		size_t n;
