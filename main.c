@@ -46,7 +46,7 @@ yaml(struct ast_test *test, const char *line)
 
 	if (!ast_line(&test->line, line)) {
 		perror("ast_line");
-		exit(EXIT_FAILURE);
+		exit(1);
 	}
 }
 
@@ -83,7 +83,7 @@ starttest(struct ast_test **head, const char *line, int a, int b)
 	new = ast_test(head, ok, line);
 	if (new == NULL) {
 		perror("ast_test");
-		exit(EXIT_FAILURE);
+		exit(1);
 	}
 }
 
