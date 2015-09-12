@@ -29,12 +29,31 @@ h1, h3, h2, h4 {
 	clear: left;
 }
 
-.notok { background-color: #fdd; border: solid 1px #e99; color: #a22; }
-.ok    { background-color: #dfd; border: solid 1px #9e9; color: #2a2; }
+h2 {
+	margin-top: 2em;
+}
 
-ol.overview li {
+.notok { background-color: #e88; border: solid 1px #c22; color: #c11; }
+.ok    { background-color: #8e8; border: solid 1px #2c2; color: #1c1; }
+.some  { background-color: #ee8; border: solid 1px #cc2; color: #cc1; }
+
+table.overview dl {
+	margin-top: 2em;
+background-color: pink;
+}
+
+table.overview ol li {
 	list-style-type: none;
 	display: inline-block;
+}
+
+table.overview ol {
+	margin:  0;
+	padding: 0;
+}
+
+table.overview ol.overview {
+	padding-left: 0;
 }
 
 .test {
@@ -42,63 +61,119 @@ ol.overview li {
 	height: 1em;
 	width:  1em;
 	padding: 0.25em;
-	margin:  0.5ex;
+	margin:  0px;
+
+	-webkit-border-radius: 1ex;
+	-moz-border-radius: 1ex;
+	border-radius: 1ex;
+	border-width: 2px;
 }
 
-.ok:before {
-	content: "\2713";
+a.test.ok:before    { content: "\2713"; } /* fa: { content: "\f00c"; } */
+a.test.notok:before { content: "\2715"; } /* fa: { content: "\f00d"; } */
+
+a.test {
+	white-space: nowrap;
+	overflow: hidden;
 }
 
-.notok:before {
-	content: "\2715";
-}
-
-.test:before {
+a.test:before {
 	padding: 0.25em;
-	margin:  -0.5ex;
+	margin:  -0.25em;
 
 	display: inline-block;
 
 	height: inherit;
 	width:  inherit;
 
+	color: #fff;
+	font-weight: bold;
+
 	text-align: center;
 
 	margin-right: 1em; /* to clear link text out of the icon box */
 }
 
-ol.overview a.test {
-	white-space: nowrap;
-	overflow: hidden;
+table {
+	border-spacing: 0;
+	border-collapse: collapse;
 }
 
-dl.details a.test {
-	white-space: nowrap;
-	overflow: visible;
-
-	text-decoration: none;
+table.details th.summary {
+	text-align: center;
 }
 
-dl.overview dt {
-	display: inline-block;
-	float: left;
-	width: 8em;
-	clear: left;
+table.details th.summary:after {
+	content: "\A0ok";
 }
 
-dl.overview dd {
-	margin-left: 0;
+th,
+td {
+	border: solid 1px #ccc;
+	padding: 0.25em 0.5em;
 }
 
-dl.overview dd ol.overview {
-	padding-left: 0;
+table.details td.status,
+table.overview td.status {
+	padding: 0.5em;
 }
 
-pre {
+table.overview td.status {
+	padding-left:  1em;
+	padding-right: 1em;
+}
+
+table.details th,
+table.overview td.status {
+	border-width: 2px ! important;
+	font-weight: bold;
+}
+
+table.details thead th.src {
+	width: 100%;
+}
+
+table.details tr.text td {
+	padding: 0;
+}
+
+table.details tr.text pre {
+	padding: 0.25em 0.5em;
+	background-color: #eee;
+	margin: 0;
+}
+
 /*
-	display: block;
-	max-height: 50em;
+table.details td.status {
+	border-right: none;
+}
+
+table.details td.num {
+	border-left: none;
+}
 */
-	overflow-y: auto;
+
+table.details thead th:first-child {
+	text-align: center;
+}
+
+table.details thead th {
+	text-align: left;
+}
+
+table.details td.num:before {
+	content: "#";
+}
+
+/* stupid hack */
+table.details tbody:after {
+	content: "\A0";
+	display: block;
+	line-height: 2em;
+	color: transparent;
+}
+
+table.details {
+	margin-top: 2em;
 }
 
