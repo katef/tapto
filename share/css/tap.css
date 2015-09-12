@@ -81,19 +81,17 @@ dl.details a.test {
 
 dl.overview dt {
 	display: inline-block;
-	background-color: pink;
+	float: left;
 	width: 8em;
+	clear: left;
 }
 
 dl.overview dd {
-	display: inline-block;
-	background-color: aliceblue;
-	margin-left: 10em;
+	margin-left: 0;
 }
 
 dl.overview dd ol.overview {
-	margin-left: 0;
-background-color: green;
+	padding-left: 0;
 }
 
 pre {
