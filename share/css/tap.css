@@ -1,0 +1,106 @@
+
+html {
+	background-color: #222;
+	width: 100%;
+}
+
+body {
+	border-left: solid 1px;
+	border-right: solid 1px;
+	padding: 4em 4em;
+	margin: 0 auto;
+	font-family: verdana, sans-serif;
+	font-size: 10pt;
+	margin-right: 3em;
+	border-top: solid 5px #eee;
+
+	background-color: white;
+	background-image: url('bp.png');
+	background-repeat: no-repeat;
+	background-position: 90% 4em;
+
+	margin: 0 auto;
+	max-width: 1100px;
+}
+
+h1, h3, h2, h4 {
+	font-family: trebuchet ms, sans-serif;
+	font-weight: normal;
+	clear: left;
+}
+
+.notok { background-color: #fdd; border: solid 1px #e99; color: #a22; }
+.ok    { background-color: #dfd; border: solid 1px #9e9; color: #2a2; }
+
+ol.overview li {
+	list-style-type: none;
+	display: inline-block;
+}
+
+.test {
+	display: inline-block;
+	height: 1em;
+	width:  1em;
+	padding: 0.25em;
+	margin:  0.5ex;
+}
+
+.ok:before {
+	content: "\2713";
+}
+
+.notok:before {
+	content: "\2715";
+}
+
+.test:before {
+	padding: 0.25em;
+	margin:  -0.5ex;
+
+	display: inline-block;
+
+	height: inherit;
+	width:  inherit;
+
+	text-align: center;
+
+	margin-right: 1em; /* to clear link text out of the icon box */
+}
+
+ol.overview a.test {
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+dl.details a.test {
+	white-space: nowrap;
+	overflow: visible;
+
+	text-decoration: none;
+}
+
+dl.overview dt {
+	display: inline-block;
+	background-color: pink;
+	width: 8em;
+}
+
+dl.overview dd {
+	display: inline-block;
+	background-color: aliceblue;
+	margin-left: 10em;
+}
+
+dl.overview dd ol.overview {
+	margin-left: 0;
+background-color: green;
+}
+
+pre {
+/*
+	display: block;
+	max-height: 50em;
+*/
+	overflow-y: auto;
+}
+
