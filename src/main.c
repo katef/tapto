@@ -144,8 +144,9 @@ main(int argc, char *argv[])
 			}
 
 			if (comment != NULL) {
-/* TODO: add as yaml line */
+/* TODO: add as yaml line
 				printf("\t<!-- %s -->\n", comment);
+*/
 			}
 
 			switch (line[0]) {
@@ -184,22 +185,23 @@ printf("missing: %d..%d\n", a, b);
 
 		/* TODO: escape XML characters */
 		for (test = tests; test != NULL; test = test->next) {
-			printf("\t<test status='%s' name='%s'>\n",
-				test->ok? "ok" : "not ok", test->name);
+			printf("\t<test status='%s' name='%s'%s>\n",
+				test->ok ? "ok" : "not ok", test->name,
+				test->line != NULL ? "" : "/");
 
-			if (test->line != NULL) {
-				printf("\t\t<![CDATA[");
-
-				for (line = test->line; line != NULL; line = line->next) {
-					printf("%s%s",
-						line->text,
-						line->next != NULL ? "\n" : "");
-				}
-
-				printf("]]>\n");
+			if (test->line == NULL) {
+				continue;
 			}
 
-			printf("\t</test>\n");
+			printf("<![CDATA[");
+
+			for (line = test->line; line != NULL; line = line->next) {
+				printf("%s%s",
+					line->text,
+					line->next != NULL ? "\n" : "");
+			}
+
+			printf("]]></test>\n");
 		}
 
 		printf("</tap>\n");
