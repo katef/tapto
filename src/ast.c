@@ -31,7 +31,7 @@ ast_line(struct ast_line **head, const char *text)
 }
 
 struct ast_test *
-ast_test(struct ast_test **head, int ok, const char *name)
+ast_test(struct ast_test **head, enum ast_status status, const char *name)
 {
 	struct ast_test *new;
 	size_t z;
@@ -46,9 +46,9 @@ ast_test(struct ast_test **head, int ok, const char *name)
 		return NULL;
 	}
 
-	new->name = strcpy((char *) new + sizeof *new, name);
-	new->line = NULL;
-	new->ok   = ok;
+	new->name   = strcpy((char *) new + sizeof *new, name);
+	new->line   = NULL;
+	new->status = status;
 
 	/* TODO: push to end; order matters */
 	new->next = *head;
