@@ -190,7 +190,7 @@ printf("missing: %d..%d\n", a, b);
 				ast_status(test->status));
 
 			if (test->name != NULL) {
-				printf("name='%s'", test->name);
+				printf(" name='%s'", test->name);
 			}
 
 			printf("%s>\n", test->line != NULL ? "" : "/");
