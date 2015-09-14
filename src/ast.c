@@ -5,6 +5,18 @@
 
 #include "ast.h"
 
+const char *
+ast_status(enum ast_status status)
+{
+	switch (status) {
+	case AST_OK:    return "ok";
+	case AST_NOTOK: return "not ok";
+
+	default:
+		return "?";
+	}
+}
+
 struct ast_line *
 ast_line(struct ast_line **head, const char *text)
 {

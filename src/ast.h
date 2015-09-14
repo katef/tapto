@@ -22,6 +22,9 @@ struct ast_test {
 	struct ast_test *next;
 };
 
+const char *
+ast_status(enum ast_status status);
+
 struct ast_line *
 ast_line(struct ast_line **head, const char *text);
 
