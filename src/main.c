@@ -186,9 +186,14 @@ printf("missing: %d..%d\n", a, b);
 
 		/* TODO: escape XML characters */
 		for (test = tests; test != NULL; test = test->next) {
-			printf("\t<test status='%s' name='%s'%s>\n",
-				test->status == AST_OK ? "ok" : "not ok", test->name,
-				test->line != NULL ? "" : "/");
+			printf("\t<test status='%s'",
+				ast_status(test->status));
+
+			if (test->name != NULL) {
+				printf("name='%s'", test->name);
+			}
+
+			printf("%s>\n", test->line != NULL ? "" : "/");
 
 			if (test->line == NULL) {
 				continue;

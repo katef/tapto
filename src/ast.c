@@ -46,19 +46,21 @@ struct ast_test *
 ast_test(struct ast_test **head, enum ast_status status, const char *name)
 {
 	struct ast_test *new;
-	size_t z;
 
 	assert(head != NULL);
-	assert(name != NULL);
 
-	z = strlen(name);
-
-	new = malloc(sizeof *new + z + 1);
+	new = malloc(sizeof *new +
+		(name == NULL ? 0 : strlen(name) + 1));
 	if (new == NULL) {
 		return NULL;
 	}
 
-	new->name   = strcpy((char *) new + sizeof *new, name);
+	if (name == NULL) {
+		new->name = NULL;
+	} else {
+		new->name = strcpy((char *) new + sizeof *new, name);
+	}
+
 	new->line   = NULL;
 	new->status = status;
 
