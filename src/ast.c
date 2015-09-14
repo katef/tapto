@@ -9,8 +9,9 @@ const char *
 ast_status(enum ast_status status)
 {
 	switch (status) {
-	case AST_OK:    return "ok";
-	case AST_NOTOK: return "not ok";
+	case AST_OK:      return "ok";
+	case AST_NOTOK:   return "not ok";
+	case AST_MISSING: return "missing";
 
 	default:
 		return "?";

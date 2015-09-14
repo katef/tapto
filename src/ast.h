@@ -3,8 +3,8 @@
 
 enum ast_status {
 	AST_OK,
-	AST_NOTOK
-	/* TODO: "missing" flag */
+	AST_NOTOK,
+	AST_MISSING
 	/* TODO: "TODO" flag */
 	/* TODO: "skip" flag */
 };

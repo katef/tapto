@@ -35,15 +35,32 @@
 
 	<xsl:template match="tap:test" mode="overview">
 		<li>
+			<xsl:if test="not(@name)">
+				<xsl:attribute name="class">
+					<xsl:text>na</xsl:text>
+				</xsl:attribute>
+			</xsl:if>
+
 			<a class="test {translate(@status, ' ', '')}" href="#TODO">
-				<xsl:value-of select="@name"/>
+				<!-- TODO: centralise -->
+				<xsl:choose>
+					<xsl:when test="not(@name) and @status = 'missing'">
+						<xsl:text>(missing)</xsl:text>
+					</xsl:when>
+					<xsl:when test="not(@name)">
+						<xsl:text>(no name)</xsl:text>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="@name"/>
+					</xsl:otherwise>
+				</xsl:choose>
 			</a>
 		</li>
 	</xsl:template>
 
 	<xsl:template match="tap:tap" mode="overview">
-		<xsl:variable name="ok"    select="count(tap:test[@status = 'ok'])"/>
-		<xsl:variable name="notok" select="count(tap:test[@status = 'not ok'])"/>
+		<xsl:variable name="ok"      select="count(tap:test[@status = 'ok'])"/>
+		<xsl:variable name="notok"   select="count(tap:test[@status = 'not ok' or @status = 'missing'])"/>
 
 		<!-- TODO: centralise as function -->
 		<xsl:variable name="status">
@@ -92,7 +109,24 @@
 				<xsl:value-of select="position()"/>
 			</td>
 			<td>
-				<xsl:value-of select="@name"/>
+				<xsl:if test="not(@name)">
+					<xsl:attribute name="class">
+						<xsl:text>na</xsl:text>
+					</xsl:attribute>
+				</xsl:if>
+
+				<!-- TODO: centralise -->
+				<xsl:choose>
+					<xsl:when test="not(@name) and @status = 'missing'">
+						<xsl:text>(missing)</xsl:text>
+					</xsl:when>
+					<xsl:when test="not(@name)">
+						<xsl:text>(no name)</xsl:text>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="@name"/>
+					</xsl:otherwise>
+				</xsl:choose>
 			</td>
 		</tr>
 
@@ -110,7 +144,7 @@
 
 	<xsl:template match="tap:tap" mode="details">
 		<xsl:variable name="ok"    select="count(tap:test[@status = 'ok'])"/>
-		<xsl:variable name="notok" select="count(tap:test[@status = 'not ok'])"/>
+		<xsl:variable name="notok" select="count(tap:test[@status = 'not ok' or @status = 'missing'])"/>
 
 		<xsl:variable name="status">
 			<xsl:choose>
@@ -149,10 +183,10 @@
 			<xsl:text>TAP Report</xsl:text>
 		</xsl:variable>
 
-		<xsl:variable name="ok"    select="count(common:node-set($root)
+		<xsl:variable name="ok"      select="count(common:node-set($root)
 			//tap:test[@status = 'ok'])"/>
-		<xsl:variable name="notok" select="count(common:node-set($root)
-			//tap:test[@status = 'not ok'])"/>
+		<xsl:variable name="notok"   select="count(common:node-set($root)
+			//tap:test[@status = 'not ok' or @status = 'missing'])"/>
 
 		<xsl:variable name="status">
 			<xsl:choose>

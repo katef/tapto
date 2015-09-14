@@ -51,6 +51,24 @@ yaml(struct ast_test *test, const char *line)
 }
 
 static void
+missingtests(struct ast_test **head, int a, int b)
+{
+	int i;
+	struct ast_test *new;
+
+	assert(head != NULL);
+	assert(a <= b);
+
+	for (i = a; i <= b; i++) {
+		new = ast_test(head, AST_MISSING, NULL);
+		if (new == NULL) {
+			perror("ast_test");
+			exit(1);
+		}
+	}
+}
+
+static void
 starttest(struct ast_test **head, const char *line, int a, int b)
 {
 	struct ast_test *new;
@@ -76,9 +94,13 @@ starttest(struct ast_test **head, const char *line, int a, int b)
 
 	line += n;
 
-	if (i != a) {
+	if (i < a || i > b) {
 		fprintf(stderr, "error: test %d out of order; expcted %d\n", i, a);
 		exit(1);
+	}
+
+	if (a < i) {
+		missingtests(head, a, i - 1);
 	}
 
 	new = ast_test(head, status, line);
@@ -170,11 +192,23 @@ main(int argc, char *argv[])
 			}
 		}
 
-		if (a < b) {
-printf("missing: %d..%d\n", a, b);
-			/* TODO: populate "not ok" AST nodes for these */
+		if (a + 1 < b) {
+			missingtests(&tests, a + 1, b);
 		}
 
+	}
+
+	/* TODO: only if -v */
+	{
+		const struct ast_test *test;
+		int i;
+
+		/* TODO: print range style: 4,5,8..9 */
+		for (test = tests, i = 0; test != NULL; test = test->next, i++) {
+			if (test->status == AST_MISSING) {
+				fprintf(stderr, "missing test %d\n", b - i);
+			}
+		}
 	}
 
 	{
