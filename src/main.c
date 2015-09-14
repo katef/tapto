@@ -54,7 +54,8 @@ static void
 starttest(struct ast_test **head, const char *line, int a, int b)
 {
 	struct ast_test *new;
-	int ok, i;
+	enum ast_status status;
+	int i;
 	int n;
 
 	assert(head != NULL);
@@ -63,9 +64,9 @@ starttest(struct ast_test **head, const char *line, int a, int b)
 
 	if (0 == strncmp(line, "not ", 4)) {
 		line += 4;
-		ok = 0;
+		status = AST_NOTOK;
 	} else {
-		ok = 1;
+		status = AST_OK;
 	}
 
 	if (1 != sscanf(line, "ok %d - %n", &i, &n)) {
@@ -80,7 +81,7 @@ starttest(struct ast_test **head, const char *line, int a, int b)
 		exit(1);
 	}
 
-	new = ast_test(head, ok, line);
+	new = ast_test(head, status, line);
 	if (new == NULL) {
 		perror("ast_test");
 		exit(1);
@@ -186,7 +187,7 @@ printf("missing: %d..%d\n", a, b);
 		/* TODO: escape XML characters */
 		for (test = tests; test != NULL; test = test->next) {
 			printf("\t<test status='%s' name='%s'%s>\n",
-				test->ok ? "ok" : "not ok", test->name,
+				test->status == AST_OK ? "ok" : "not ok", test->name,
 				test->line != NULL ? "" : "/");
 
 			if (test->line == NULL) {

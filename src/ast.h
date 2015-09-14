@@ -1,6 +1,14 @@
 #ifndef AST_H
 #define AST_H
 
+enum ast_status {
+	AST_OK,
+	AST_NOTOK
+	/* TODO: "missing" flag */
+	/* TODO: "TODO" flag */
+	/* TODO: "skip" flag */
+};
+
 struct ast_line {
 	/* TODO: comment flag */
 	const char *text;
@@ -8,10 +16,8 @@ struct ast_line {
 };
 
 struct ast_test {
-	/* TODO: "TODO" flag */
-	/* TODO: store test number? */
 	const char *name;
-	int ok;
+	enum ast_status status;
 	struct ast_line *line;
 	struct ast_test *next;
 };
