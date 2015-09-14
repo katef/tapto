@@ -4,9 +4,9 @@
 enum ast_status {
 	AST_OK,
 	AST_NOTOK,
-	AST_MISSING
-	/* TODO: "TODO" flag */
-	/* TODO: "skip" flag */
+	AST_MISSING,
+	AST_TODO,
+	AST_SKIP
 };
 
 struct ast_line {

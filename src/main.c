@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <errno.h>
 
+#include <strings.h>
+
 #include "ast.h"
 
 extern char *optarg;
@@ -167,6 +169,19 @@ main(int argc, char *argv[])
 			}
 
 			if (comment != NULL) {
+				comment += strspn(comment, " \t");
+
+/* TODO: only if we're actually in a test */
+
+				if (0 == strncasecmp(comment, "todo", 4)) {
+					tests->status = AST_TODO;
+				}
+
+				if (0 == strncasecmp(comment, "skip", 4)) {
+					tests->status = AST_SKIP;
+				}
+
+				/* TODO: add comment line anyway */
 /* TODO: add as yaml line
 				printf("\t<!-- %s -->\n", comment);
 */

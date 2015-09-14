@@ -37,6 +37,8 @@ h2 {
 .ok      { background-color: #8e8; border: solid  1px #2c2; color: #1c1; }
 .some    { background-color: #ee8; border: solid  1px #cc2; color: #cc1; }
 .missing { background-color: #fcc; border: dotted 1px #b22; color: #c11; }
+.todo    { background-color: #cfc; border: dotted 1px #2b2; color: #1c1; }
+.skip    { background-color: #cfc; border: dotted 1px #2b2; color: #1c1; }
 
 .na {
 	color: #bbb;
@@ -76,6 +78,8 @@ table.overview ol.overview {
 a.test.ok:before      { content: "\2713"; } /* fa: { content: "\f00c"; } */
 a.test.notok:before   { content: "\2715"; } /* fa: { content: "\f00d"; } */
 a.test.missing:before { content: "?";     }
+a.test.todo:before    { content: "?";     }
+a.test.skip:before    { content: "?";     }
 
 a.test {
 	white-space: nowrap;

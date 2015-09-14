@@ -12,6 +12,8 @@ ast_status(enum ast_status status)
 	case AST_OK:      return "ok";
 	case AST_NOTOK:   return "not ok";
 	case AST_MISSING: return "missing";
+	case AST_TODO:    return "todo";
+	case AST_SKIP:    return "skip";
 
 	default:
 		return "?";
