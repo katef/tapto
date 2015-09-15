@@ -80,7 +80,7 @@ starttest(struct ast_test **head, const char *line, int a, int b)
 
 	assert(head != NULL);
 	assert(line != NULL);
-	assert(a <= b);
+	assert(b == -1 || a <= b);
 
 	if (0 == strncmp(line, "not ", 4)) {
 		line += 4;
@@ -96,8 +96,8 @@ starttest(struct ast_test **head, const char *line, int a, int b)
 
 	line += n;
 
-	if (i < a || i > b) {
-		fprintf(stderr, "error: test %d out of order; expcted %d\n", i, a);
+	if (i < a || (b != -1 && i > b)) {
+		fprintf(stderr, "error: test %d out of order; expected %d\n", i, a);
 		exit(1);
 	}
 
@@ -157,7 +157,8 @@ main(int argc, char *argv[])
 		size_t n;
 
 		line = NULL;
-		a = b = -1;
+		a =  1;
+		b = -1; /* no plan */
 		n = 0;
 
 		while (-1 != getline(&line, &n, stdin)) {
