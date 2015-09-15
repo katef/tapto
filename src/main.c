@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
+#include <ctype.h>
 
 #include <strings.h>
 
@@ -17,6 +18,55 @@
 
 extern char *optarg;
 extern int optind;
+
+static void
+escputc(int c, FILE *f)
+{
+	size_t i;
+
+	struct {
+		int in;
+		const char *out;
+	} esc[] = {
+		{ '&',  "&amp;"  },
+		{ '\'', "&#x27;" },
+		{ '\"', "&quot;" },
+		{ '<',  "&#x3C;" },
+		{ '>',  "&#x3E;" },
+
+		{ '\f', "&#x0C;" },
+		{ '\n', "&#x0A;" },
+		{ '\r', "&#x0D;" },
+		{ '\t', "&#x09;" },
+		{ '\v', "$#x0B;" }
+	};
+
+	assert(f != NULL);
+
+	for (i = 0; i < sizeof esc / sizeof *esc; i++) {
+		if (esc[i].in == c) {
+			fputs(esc[i].out, f);
+			return;
+		}
+	}
+
+	if (!isprint(c)) {
+		fprintf(f, "&#x%X;", (unsigned char) c);
+		return;
+	}
+
+	putc(c, f);
+}
+
+static void
+escputs(const char *s, FILE *f)
+{
+	const char *p;
+
+	for (p = s; *p != '\0'; p++) {
+		escputc(*p, f);
+	}
+}
 
 static void
 plan(const char *line, int *a, int *b)
@@ -240,7 +290,9 @@ main(int argc, char *argv[])
 				ast_status(test->status));
 
 			if (test->name != NULL) {
-				printf(" name='%s'", test->name);
+				printf(" name='");
+				escputs(test->name, stdout);
+				printf("'");
 			}
 
 			printf("%s>\n", test->line != NULL ? "" : "/");
