@@ -23,7 +23,7 @@ ast_status(enum ast_status status)
 struct ast_line *
 ast_line(struct ast_line **head, const char *text)
 {
-	struct ast_line *new;
+	struct ast_line **tail, *new;
 	size_t z;
 
 	assert(head != NULL);
@@ -38,9 +38,11 @@ ast_line(struct ast_line **head, const char *text)
 
 	new->text = strcpy((char *) new + sizeof *new, text);
 
-	/* TODO: push to end; order matters */
-	new->next = *head;
-	*head = new;
+	for (tail = head; *tail != NULL; tail = &(*tail)->next)
+		;
+
+	new->next = *tail;
+	*tail = new;
 
 	return new;
 }
@@ -48,7 +50,7 @@ ast_line(struct ast_line **head, const char *text)
 struct ast_test *
 ast_test(struct ast_test **head, enum ast_status status, const char *name)
 {
-	struct ast_test *new;
+	struct ast_test **tail, *new;
 
 	assert(head != NULL);
 
@@ -67,9 +69,11 @@ ast_test(struct ast_test **head, enum ast_status status, const char *name)
 	new->line   = NULL;
 	new->status = status;
 
-	/* TODO: push to end; order matters */
-	new->next = *head;
-	*head = new;
+	for (tail = head; *tail != NULL; tail = &(*tail)->next)
+		;
+
+	new->next = *tail;
+	*tail = new;
 
 	return new;
 }
