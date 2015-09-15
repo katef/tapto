@@ -66,6 +66,7 @@ ast_test(struct ast_test **head, enum ast_status status, const char *name)
 		new->name = strcpy((char *) new + sizeof *new, name);
 	}
 
+	new->rep    = 1;
 	new->line   = NULL;
 	new->status = status;
 

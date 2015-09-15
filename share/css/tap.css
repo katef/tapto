@@ -44,6 +44,11 @@ h2 {
 	color: #bbb;
 }
 
+.rep {
+	color: #aaa;
+	float: right;
+}
+
 table.overview dl {
 	margin-top: 2em;
 }

@@ -157,6 +157,14 @@
 						<xsl:value-of select="@name"/>
 					</xsl:otherwise>
 				</xsl:choose>
+				<xsl:if test="@rep">
+					<xsl:text> </xsl:text>
+					<span class="rep">
+						<xsl:text> (repeated&#xA0;&#xD7;</xsl:text>
+						<xsl:value-of select="@rep"/>
+						<xsl:text>)</xsl:text>
+					</span>
+				</xsl:if>
 			</td>
 		</tr>
 

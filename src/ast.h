@@ -18,6 +18,7 @@ struct ast_line {
 struct ast_test {
 	const char *name;
 	enum ast_status status;
+	unsigned int rep;
 	struct ast_line *line;
 	struct ast_test *next;
 };

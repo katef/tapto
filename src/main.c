@@ -173,12 +173,17 @@ main(int argc, char *argv[])
 {
 	struct ast_test *tests;
 	int a, b;
+	int fold;
+
+	fold = 0;
 
 	{
 		int c;
 
-		while (c = getopt(argc, argv, "h"), c != -1) {
+		while (c = getopt(argc, argv, "dh"), c != -1) {
 			switch (c) {
+			case 'd': fold = 1; break;
+
 			case 'h':
 				usage();
 				return 0;
@@ -277,6 +282,39 @@ main(int argc, char *argv[])
 		}
 	}
 
+	if (fold) {
+		struct ast_test *test, *next;
+
+		for (test = tests; test != NULL; test = next) {
+			next = test->next;
+
+			if (next == NULL) {
+				continue;
+			}
+
+			if (0 != strcmp(test->name, next->name)) {
+				continue;
+			}
+
+			if (test->status != next->status) {
+				continue;
+			}
+
+			if (test->line != NULL || next->line != NULL) {
+				continue;
+			}
+
+			test->rep++;
+
+			test->next = next->next;
+			next = test;
+
+			/* TODO: free next */
+		}
+	}
+
+	/* TODO: for -v, warn about duplicate test names */
+
 	{
 		const struct ast_test *test;
 		const struct ast_line *line;
@@ -288,6 +326,10 @@ main(int argc, char *argv[])
 		for (test = tests; test != NULL; test = test->next) {
 			printf("\t<test status='%s'",
 				ast_status(test->status));
+
+			if (test->rep > 1) {
+				printf(" rep='%u'", test->rep);
+			}
 
 			if (test->name != NULL) {
 				printf(" name='");
