@@ -19,14 +19,14 @@ extern char *optarg;
 extern int optind;
 
 static void
-range(const char *line, int *a, int *b)
+plan(const char *line, int *a, int *b)
 {
 	assert(line != NULL);
 	assert(a != NULL);
 	assert(b != NULL);
 
 	if (*a != -1) {
-		fprintf(stderr, "syntax error: duplicate range: %s\n", line);
+		fprintf(stderr, "syntax error: duplicate plan: %s\n", line);
 		exit(1);
 	}
 
@@ -36,7 +36,7 @@ range(const char *line, int *a, int *b)
 	}
 
 	if (*a < 0 && *b < *a) {
-		fprintf(stderr, "error: invalid range: %d..%d\n", *a, *b);
+		fprintf(stderr, "error: invalid plan: %d..%d\n", *a, *b);
 		exit(1);
 	}
 }
@@ -191,7 +191,7 @@ main(int argc, char *argv[])
 			case '0': case '1': case '2': case '3':
 			case '4': case '5': case '6': case '7':
 			case '8': case '9':
-				range(line, &a, &b);
+				plan(line, &a, &b);
 				continue;
 
 			case 'n':
