@@ -17,7 +17,7 @@
 		<xsl:for-each select="str:tokenize($src, ':')">
 			<xsl:variable name="filename" select="str:tokenize(., '/')[last()]/text()"/>
 
-			<tap:tap src="{substring-before($filename, '.')}">
+			<tap:tap src="{substring-before($filename, '.xml')}">
 				<xsl:copy-of select="document(.)/tap:tap/tap:test"/>
 			</tap:tap>
 		</xsl:for-each>
