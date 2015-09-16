@@ -96,6 +96,9 @@ yaml(struct ast_test *test, const char *line)
 {
 	assert(test != NULL);
 
+	while (test->next != NULL)
+		test = test->next;
+
 	if (!ast_line(&test->line, line)) {
 		perror("ast_line");
 		exit(1);
@@ -259,6 +262,11 @@ main(int argc, char *argv[])
 
 			case '\v': case '\t': case '\f':
 			case '\r': case '\n': case ' ':
+				if (tests == NULL) {
+					fprintf(stderr, "stray text: %s\n", line);
+					continue;
+				}
+
 				yaml(tests, line);
 				continue;
 			}
