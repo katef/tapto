@@ -165,7 +165,8 @@ starttest(struct ast_test **head, const char *line, int a, int b)
 void
 usage(void)
 {
-	fprintf(stderr, "usage: tap2xml [-h]\n");
+	fprintf(stderr, "usage: tap2xml [-d]\n");
+	fprintf(stderr, "       tap2xml [-h]\n");
 }
 
 int
