@@ -141,6 +141,7 @@ table.details th,
 table.overview td.status {
 	border-width: 2px ! important;
 	font-weight: bold;
+	vertical-align: top;
 }
 
 table.details thead th.src {
