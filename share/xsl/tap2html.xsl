@@ -9,7 +9,8 @@
 	xmlns:common="http://exslt.org/common"
 	xmlns:tap="http://xml.elide.org/tap"
 
-	extension-element-prefixes="func set str common">
+	extension-element-prefixes="func set str common"
+	exclude-result-prefixes="tap">
 
 	<xsl:import href="output.xsl"/>
 
