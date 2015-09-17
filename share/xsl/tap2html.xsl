@@ -32,6 +32,77 @@
 		doctype-system="http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"
 		doctype-public="-//W3C//DTD XHTML 1.1//EN"/>
 
+	<func:function name="tap:category">
+		<xsl:param name="ok"    select="0"/>
+		<xsl:param name="notok" select="0"/>
+
+		<func:result>
+			<xsl:choose>
+				<xsl:when test="$notok = 0">
+					<xsl:text>ok</xsl:text>
+				</xsl:when>
+				<xsl:when test="$ok = 0">
+					<xsl:text>notok</xsl:text>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:text>some</xsl:text>
+				</xsl:otherwise>
+			</xsl:choose>
+		</func:result>
+	</func:function>
+
+	<func:function name="tap:ratio">
+		<xsl:param name="ok"    select="0"/>
+		<xsl:param name="notok" select="0"/>
+
+		<func:result>
+			<xsl:value-of select="$ok"/>
+			<xsl:text>/</xsl:text>
+			<xsl:value-of select="$ok + $notok"/>
+			<xsl:text>&#xA0;ok</xsl:text>
+		</func:result>
+	</func:function>
+
+	<func:function name="tap:name">
+		<xsl:param name="name"   select="false()"/>
+		<xsl:param name="status" select="false()"/>
+
+		<func:result>
+			<xsl:choose>
+				<xsl:when test="$status = 'todo'">
+					<span class="absence">
+						<xsl:text>(TODO)</xsl:text>
+					</span>
+					<xsl:if test="$name or $status = 'missing'">
+						<xsl:text> </xsl:text>
+					</xsl:if>
+				</xsl:when>
+				<xsl:when test="$status = 'skip'">
+					<span class="absence">
+						<xsl:text>(skipped)</xsl:text>
+					</span>
+					<xsl:if test="$name or $status = 'missing'">
+						<xsl:text> </xsl:text>
+					</xsl:if>
+				</xsl:when>
+			</xsl:choose>
+
+			<xsl:choose>
+				<xsl:when test="not($name) and $status = 'missing'">
+					<span class="absence">
+						<xsl:text>(missing)</xsl:text>
+					</span>
+				</xsl:when>
+				<xsl:when test="not($name)">
+					<xsl:text>(no name)</xsl:text>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="$name"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</func:result>
+	</func:function>
+
 	<xsl:template match="tap:test" mode="index">
 		<li>
 			<xsl:if test="not(@name)">
@@ -80,31 +151,12 @@
 		<xsl:variable name="ok"      select="count(tap:test[@status = 'ok' or @status = 'todo' or @status = 'skip'])"/>
 		<xsl:variable name="notok"   select="count(tap:test[@status = 'not ok' or @status = 'missing'])"/>
 
-		<!-- TODO: centralise as function -->
-		<xsl:variable name="status">
-			<xsl:choose>
-				<xsl:when test="$notok = 0">
-					<xsl:text>ok</xsl:text>
-				</xsl:when>
-				<xsl:when test="$ok = 0">
-					<xsl:text>notok</xsl:text>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:text>some</xsl:text>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-
 		<tr>
-			<td class="status {$status}">
-				<!-- TODO: centralise as function -->
-				<xsl:value-of select="$ok"/>
-				<xsl:text>/</xsl:text>
-				<xsl:value-of select="$ok + $notok"/>
-				<xsl:text>&#xA0;ok</xsl:text>
+			<td class="status {tap:category($ok, $notok)}">
+				<xsl:copy-of select="tap:ratio($ok, $notok)"/>
 			</td>
 
-			<td class="status {$status}">
+			<td class="status {tap:category($ok, $notok)}">
 				<xsl:value-of select="@src"/> <!-- TODO -->
 			</td>
 
@@ -153,39 +205,7 @@
 				<xsl:value-of select="@n"/>
 			</td>
 			<td>
-				<xsl:choose>
-					<xsl:when test="@status = 'todo'">
-						<span class="absence">
-							<xsl:text>(TODO)</xsl:text>
-						</span>
-						<xsl:if test="@name or @status = 'missing'">
-							<xsl:text> </xsl:text>
-						</xsl:if>
-					</xsl:when>
-					<xsl:when test="@status = 'skip'">
-						<span class="absence">
-							<xsl:text>(skipped)</xsl:text>
-						</span>
-						<xsl:if test="@name or @status = 'missing'">
-							<xsl:text> </xsl:text>
-						</xsl:if>
-					</xsl:when>
-				</xsl:choose>
-
-				<!-- TODO: centralise -->
-				<xsl:choose>
-					<xsl:when test="not(@name) and @status = 'missing'">
-						<span class="absence">
-							<xsl:text>(missing)</xsl:text>
-						</span>
-					</xsl:when>
-					<xsl:when test="not(@name)">
-						<xsl:text>(no name)</xsl:text>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="@name"/>
-					</xsl:otherwise>
-				</xsl:choose>
+				<xsl:copy-of select="tap:name(@name, @status)"/>
 				<xsl:if test="@rep">
 					<xsl:text> </xsl:text>
 					<span class="rep">
@@ -213,28 +233,11 @@
 		<xsl:variable name="ok"    select="count(tap:test[@status = 'ok' or @status = 'todo' or @status = 'skip'])"/>
 		<xsl:variable name="notok" select="count(tap:test[@status = 'not ok' or @status = 'missing'])"/>
 
-		<xsl:variable name="status">
-			<xsl:choose>
-				<xsl:when test="$notok = 0">
-					<xsl:text>ok</xsl:text>
-				</xsl:when>
-				<xsl:when test="$ok = 0">
-					<xsl:text>notok</xsl:text>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:text>some</xsl:text>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-
-		<thead class="summary {$status}">
-			<th class="{$status}" colspan="2">
-				<xsl:value-of select="$ok"/>
-				<xsl:text>/</xsl:text>
-				<xsl:value-of select="$ok + $notok"/>
-				<xsl:text>&#xA0;ok</xsl:text>
+		<thead class="summary {tap:category($ok, $notok)}">
+			<th class="{tap:category($ok, $notok)}" colspan="2">
+				<xsl:copy-of select="tap:ratio($ok, $notok)"/>
 			</th>
-			<th class="{$status} src">
+			<th class="{tap:category($ok, $notok)} src">
 				<xsl:value-of select="@src"/> <!-- TODO -->
 			</th>
 		</thead>
@@ -258,20 +261,6 @@
 		<xsl:variable name="notok"   select="count(common:node-set($root)
 			//tap:test[@status = 'not ok' or @status = 'missing'])"/>
 
-		<xsl:variable name="status">
-			<xsl:choose>
-				<xsl:when test="$notok = 0">
-					<xsl:text>ok</xsl:text>
-				</xsl:when>
-				<xsl:when test="$ok = 0">
-					<xsl:text>notok</xsl:text>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:text>some</xsl:text>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-
 		<html>
 			<head>
 				<title>
@@ -292,11 +281,8 @@
 
 				<table class="overview">
 					<tr>
-						<td class="status {$status}" colspan="2">
-							<!-- TODO: centralise as function -->
-							<xsl:value-of select="$ok"/>
-							<xsl:text>/</xsl:text>
-							<xsl:value-of select="$ok + $notok"/>
+						<td class="status {tap:category($ok, $notok)}" colspan="2">
+							<xsl:copy-of select="tap:ratio($ok, $notok)"/>
 							<xsl:text> total</xsl:text>
 
 							<xsl:variable name="pass" select="($ok div ($ok + $notok)) * 100"/>
