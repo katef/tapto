@@ -23,7 +23,6 @@
 		</xsl:for-each>
 	</xsl:variable>
 
-
 	<xsl:output method="xml" version="1.0"
 		omit-xml-declaration="no"
 		encoding="utf-8"
@@ -33,7 +32,7 @@
 		doctype-system="http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"
 		doctype-public="-//W3C//DTD XHTML 1.1//EN"/>
 
-	<xsl:template match="tap:test" mode="overview">
+	<xsl:template match="tap:test" mode="index">
 		<li>
 			<xsl:if test="not(@name)">
 				<xsl:attribute name="class">
@@ -41,30 +40,40 @@
 				</xsl:attribute>
 			</xsl:if>
 
-			<a class="test {translate(@status, ' ', '')}" href="#TODO">
-				<!-- TODO: centralise -->
-				<xsl:choose>
-					<xsl:when test="not(@name) and @status = 'missing'">
-						<xsl:text>(missing)</xsl:text>
-					</xsl:when>
-					<xsl:when test="not(@name)">
-						<xsl:text>(no name)</xsl:text>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="@name"/>
-					</xsl:otherwise>
-				</xsl:choose>
-
-				<xsl:choose>
-					<xsl:when test="@status = 'todo'">
-						<xsl:text> (TODO)</xsl:text>
-					</xsl:when>
-					<xsl:when test="@status = 'skip'">
-						<xsl:text> (skipped)</xsl:text>
-					</xsl:when>
-				</xsl:choose>
+			<a class="index {translate(@status, ' ', '')}" href="#TODO">
+				<xsl:value-of select="@n"/>
 			</a>
 		</li>
+	</xsl:template>
+
+	<xsl:template name="index">
+		<xsl:param name="status"/>
+
+		<xsl:variable name="limit" select="20"/>
+
+		<xsl:if test="tap:test[@status = $status]">
+			<tr>
+				<th>
+					<a class="test status {translate($status, ' ', '')}" href="#TODO">
+						<xsl:value-of select="count(tap:test[@status = $status])"/>
+						<xsl:text>&#xA0;</xsl:text>
+						<xsl:value-of select="$status"/>
+					</a>
+				</th>
+				<td>
+					<ol>
+						<xsl:apply-templates select="tap:test[@status = $status][position() &lt; $limit]" mode="index"/>
+						<xsl:if test="count(tap:test[@status = $status]) &gt; $limit">
+							<li>
+								<xsl:text>... and </xsl:text>
+								<xsl:value-of select="count(tap:test[@status = $status]) - $limit"/>
+								<xsl:text>&#xA0;more</xsl:text>
+							</li>
+						</xsl:if>
+					</ol>
+				</td>
+			</tr>
+		</xsl:if>
 	</xsl:template>
 
 	<xsl:template match="tap:tap" mode="overview">
@@ -100,9 +109,29 @@
 			</td>
 
 			<td>
-				<ol>
-					<xsl:apply-templates select="tap:test" mode="overview"/>
-				</ol>
+				<xsl:choose>
+					<xsl:when test="count(tap:test) = count(tap:test[@status = 'ok'])">
+						<span class="na">
+							<xsl:text>(none)</xsl:text>
+						</span>
+					</xsl:when>
+					<xsl:otherwise>
+						<table class="index">
+							<xsl:call-template name="index">
+								<xsl:with-param name="status" select="'missing'"/>
+							</xsl:call-template>
+							<xsl:call-template name="index">
+								<xsl:with-param name="status" select="'not ok'"/>
+							</xsl:call-template>
+							<xsl:call-template name="index">
+								<xsl:with-param name="status" select="'skip'"/>
+							</xsl:call-template>
+							<xsl:call-template name="index">
+								<xsl:with-param name="status" select="'todo'"/>
+							</xsl:call-template>
+						</table>
+					</xsl:otherwise>
+				</xsl:choose>
 			</td>
 		</tr>
 	</xsl:template>
@@ -121,7 +150,7 @@
 				</a>
 			</td>
 			<td class="num">
-				<xsl:value-of select="position()"/>
+				<xsl:value-of select="@n"/>
 			</td>
 			<td>
 				<xsl:choose>
@@ -211,7 +240,10 @@
 		</thead>
 
 		<tbody>
-			<xsl:apply-templates select="tap:test" mode="details"/>
+			<xsl:apply-templates select="tap:test" mode="details">
+				<xsl:sort data-type="text"   select="@status"/>
+				<xsl:sort data-type="number" select="@n"/>
+			</xsl:apply-templates>
 		</tbody>
 	</xsl:template>
 
@@ -259,9 +291,6 @@
 				</h1>
 
 				<table class="overview">
-					<xsl:apply-templates select="common:node-set($root)
-						/tap:tap" mode="overview"/>
-
 					<tr>
 						<td class="status {$status}" colspan="2">
 							<!-- TODO: centralise as function -->
@@ -275,7 +304,13 @@
 							<xsl:value-of select="round($pass * 100) div 100"/> <!-- for 2dp -->
 							<xsl:text>% ok</xsl:text>
 						</td>
+						<th>
+							<xsl:text>Unresolved issues</xsl:text>
+						</th>
 					</tr>
+
+					<xsl:apply-templates select="common:node-set($root)
+						/tap:tap" mode="overview"/>
 				</table>
 
 				<table class="details">
