@@ -25,15 +25,6 @@
 		</xsl:for-each>
 	</xsl:variable>
 
-	<xsl:output method="xml" version="1.0"
-		omit-xml-declaration="no"
-		encoding="utf-8"
-		indent="yes"
-		standalone="yes"
-		cdata-section-elements="script"
-		doctype-system="http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"
-		doctype-public="-//W3C//DTD XHTML 1.1//EN"/>
-
 	<func:function name="tap:category">
 		<xsl:param name="ok"    select="0"/>
 		<xsl:param name="notok" select="0"/>
