@@ -327,17 +327,17 @@ main(int argc, char *argv[])
 	{
 		const struct ast_test *test;
 		const struct ast_line *line;
-		unsigned int i;
+		unsigned int n;
 
 		printf("<?xml version='1.0'?>\n");
 		printf("<tap xmlns='http://xml.elide.org/tap'>\n");
 
 		/* TODO: escape XML characters */
-		for (test = tests, i = 1; test != NULL; test = test->next, i++) {
+		for (test = tests, n = 1; test != NULL; test = test->next, n++) {
 			printf("\t<test status='%s'",
 				ast_status(test->status));
 
-			printf(" n='%u'", i);
+			printf(" n='%u'", n);
 
 			if (test->rep > 1) {
 				printf(" rep='%u'", test->rep);
