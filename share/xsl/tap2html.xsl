@@ -11,6 +11,8 @@
 
 	extension-element-prefixes="func set str common">
 
+	<xsl:import href="output.xsl"/>
+
 	<xsl:param name="src"/> <!-- ':'-delimited list of tap XML files -->
 
 	<xsl:variable name="root">
@@ -261,20 +263,13 @@
 		<xsl:variable name="notok"   select="count(common:node-set($root)
 			//tap:test[@status = 'not ok' or @status = 'missing'])"/>
 
-		<html>
-			<head>
-				<title>
-					<xsl:copy-of select="$title"/>
-				</title>
+		<xsl:call-template name="output">
+			<xsl:with-param name="title"  select="$title"/>
+			<xsl:with-param name="css"    select="'css/tap.css'"/>
+			<xsl:with-param name="js"     select="'js/col.js'"/>
+			<xsl:with-param name="onload" select="'Colalign.init(r);'"/>
 
-				<link rel="stylesheet" type="text/css" href="css/tap.css"/>
-
-				<script type="text/javascript" src="js/col.js"></script>
-			</head>
-
-			<body onload="var r = document.documentElement;
-				Colalign.init(r);">
-
+			<xsl:with-param name="body">
 				<h1>
 					<xsl:copy-of select="$title"/>
 				</h1>
@@ -303,8 +298,8 @@
 					<xsl:apply-templates select="common:node-set($root)
 						/tap:tap" mode="details"/>
 				</table>
-			</body>
-		</html>
+			</xsl:with-param>
+		</xsl:call-template>
 	</xsl:template>
 
 </xsl:stylesheet>
