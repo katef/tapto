@@ -60,6 +60,10 @@ table.overview ol.overview {
 	padding-left: 0;
 }
 
+table.overview td.issues.none {
+	text-align: center;
+}
+
 .test {
 	display: inline-block;
 	height: 1em;
@@ -105,6 +109,7 @@ a.test:before {
 
 .test.status {
 	width: auto;
+	min-width: 6em;
 	display: block;
 }
 
@@ -115,6 +120,32 @@ a.test.status:before {
 table {
 	border-spacing: 0;
 	border-collapse: collapse;
+}
+
+table.details thead th:first-child:before {
+	min-width: 1.5em;
+	display: inline-block;
+	text-align: left;
+}
+
+table.details thead.collapsed th:first-child:before {
+	content: "\25B6\A0"; /* > */
+}
+
+table.details thead.expanded th:first-child:before {
+	content: "\25BC\A0"; /* v */
+}
+
+table.details thead.expandable:hover th:first-child:before {
+	color: #000;
+}
+
+table.details thead.expandable {
+	cursor: pointer;
+}
+
+table.details thead.collapsed + tbody {
+	display: none;
 }
 
 table.details th.summary {
@@ -140,14 +171,23 @@ table.overview th,
 table.overview td.status {
 	padding-left:  1em;
 	padding-right: 1em;
+}
+
+table.overview th {
 	text-align: left;
 }
 
 table.details th,
 table.overview td.status {
-	border-width: 2px ! important;
+	border-width: 2px;
 	font-weight: bold;
 	vertical-align: top;
+}
+
+th.ratio,
+td.ratio {
+	min-width: 6em;
+	text-align: center;
 }
 
 table.details thead th.src {
@@ -162,6 +202,10 @@ table.details tr.text pre {
 	padding: 0.25em 0.5em;
 	background-color: #eee;
 	margin: 0;
+}
+
+table.details td.status {
+	text-align: center;
 }
 
 /*
@@ -188,12 +232,15 @@ table.index a.index:before {
 }
 
 /* stupid hack */
+/* XXX: makes no sense with the javascript expander,
+but would suit print (where everything is expanded)
 table.details tbody:after {
 	content: "\A0";
 	display: block;
 	line-height: 2em;
 	color: transparent;
 }
+*/
 
 table.details {
 	margin-top: 2em;

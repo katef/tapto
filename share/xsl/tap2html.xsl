@@ -146,7 +146,7 @@
 		<xsl:variable name="notok"   select="count(tap:test[@status = 'not ok' or @status = 'missing'])"/>
 
 		<tr>
-			<td class="status {tap:category($ok, $notok)}">
+			<td class="ratio status {tap:category($ok, $notok)}">
 				<xsl:copy-of select="tap:ratio($ok, $notok)"/>
 			</td>
 
@@ -155,6 +155,13 @@
 			</td>
 
 			<td>
+				<xsl:attribute name="class">
+					<xsl:text>issues</xsl:text>
+					<xsl:if test="count(tap:test) = count(tap:test[@status = 'ok'])">
+						<xsl:text> none</xsl:text>
+					</xsl:if>
+				</xsl:attribute>
+
 				<xsl:choose>
 					<xsl:when test="count(tap:test) = count(tap:test[@status = 'ok'])">
 						<span class="na">
@@ -227,13 +234,21 @@
 		<xsl:variable name="ok"    select="count(tap:test[@status = 'ok' or @status = 'todo' or @status = 'skip'])"/>
 		<xsl:variable name="notok" select="count(tap:test[@status = 'not ok' or @status = 'missing'])"/>
 
-		<thead class="summary {tap:category($ok, $notok)}">
-			<th class="{tap:category($ok, $notok)}" colspan="2">
-				<xsl:copy-of select="tap:ratio($ok, $notok)"/>
-			</th>
-			<th class="{tap:category($ok, $notok)} src">
-				<xsl:value-of select="@src"/> <!-- TODO -->
-			</th>
+		<xsl:variable name="expanded">
+			<xsl:if test="$notok &gt; 0">
+				<xsl:text>expanded</xsl:text>
+			</xsl:if>
+		</xsl:variable>
+
+		<thead class="expandable {$expanded} summary {tap:category($ok, $notok)}">
+			<tr>
+				<th class="ratio {tap:category($ok, $notok)}" colspan="2">
+					<xsl:copy-of select="tap:ratio($ok, $notok)"/>
+				</th>
+				<th class="{tap:category($ok, $notok)} src">
+					<xsl:value-of select="@src"/> <!-- TODO -->
+				</th>
+			</tr>
 		</thead>
 
 		<tbody>
@@ -258,8 +273,8 @@
 		<xsl:call-template name="output">
 			<xsl:with-param name="title"  select="$title"/>
 			<xsl:with-param name="css"    select="'css/tap.css'"/>
-			<xsl:with-param name="js"     select="'js/col.js'"/>
-			<xsl:with-param name="onload" select="'Colalign.init(r);'"/>
+			<xsl:with-param name="js"     select="'js/col.js js/expander.js'"/>
+			<xsl:with-param name="onload" select="'Colalign.init(r); Expander.init(r, &quot;thead&quot;, &quot;th&quot;, false, true);'"/>
 
 			<xsl:with-param name="body">
 				<h1>
