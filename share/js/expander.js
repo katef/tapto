@@ -1,4 +1,4 @@
-/* $Id: expander.js 579 2015-09-18 18:07:51Z kate $ */
+/* $Id: expander.js 580 2015-09-18 22:01:23Z kate $ */
 
 var Expander = new (function () {
 
@@ -99,15 +99,15 @@ var Expander = new (function () {
 		}
 
 		if (expand) {
-if (oneway) {
-	endclass = oneway;
-} else {
-			if (hasclass(dl, "expanded")) {
-				endclass = "collapsed";
+			if (oneway) {
+				endclass = oneway;
 			} else {
-				endclass = "expanded";
+				if (hasclass(dl, "expanded")) {
+					endclass = "collapsed";
+				} else {
+					endclass = "expanded";
+				}
 			}
-}
 
 			removeclass(dl, "expanded");
 			removeclass(dl, "collapsed");
