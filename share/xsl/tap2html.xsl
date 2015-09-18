@@ -234,29 +234,41 @@
 		<xsl:variable name="ok"    select="count(tap:test[@status = 'ok' or @status = 'todo' or @status = 'skip'])"/>
 		<xsl:variable name="notok" select="count(tap:test[@status = 'not ok' or @status = 'missing'])"/>
 
-		<xsl:variable name="expanded">
-			<xsl:if test="$notok &gt; 0">
-				<xsl:text>expanded</xsl:text>
-			</xsl:if>
-		</xsl:variable>
+		<dl>
+			<xsl:attribute name="class">
+				<xsl:text>details expandable</xsl:text>
+				<xsl:if test="$notok &gt; 0">
+					<xsl:text> expanded</xsl:text>
+				</xsl:if>
+			</xsl:attribute>
 
-		<thead class="expandable {$expanded} summary {tap:category($ok, $notok)}">
-			<tr>
-				<th class="ratio {tap:category($ok, $notok)}" colspan="2">
-					<xsl:copy-of select="tap:ratio($ok, $notok)"/>
-				</th>
-				<th class="{tap:category($ok, $notok)} src">
-					<xsl:value-of select="@src"/> <!-- TODO -->
-				</th>
-			</tr>
-		</thead>
+<!-- TODO -->
+			<dt/>
 
-		<tbody>
-			<xsl:apply-templates select="tap:test" mode="details">
-				<xsl:sort data-type="text"   select="@status"/>
-				<xsl:sort data-type="number" select="@n"/>
-			</xsl:apply-templates>
-		</tbody>
+			<dd>
+				<table class="details">
+					<!-- XXX: onclick here ought to be populated by js -->
+					<thead class="summary {tap:category($ok, $notok)}"
+						onclick="Expander.toggle(this, false, true, 'expanded')">
+						<tr>
+							<th class="ratio {tap:category($ok, $notok)}" colspan="2">
+								<xsl:copy-of select="tap:ratio($ok, $notok)"/>
+							</th>
+							<th class="{tap:category($ok, $notok)} src">
+								<xsl:value-of select="@src"/> <!-- TODO -->
+							</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<xsl:apply-templates select="tap:test" mode="details">
+							<xsl:sort data-type="text"   select="@status"/>
+							<xsl:sort data-type="number" select="@n"/>
+						</xsl:apply-templates>
+					</tbody>
+				</table>
+			</dd>
+		</dl>
 	</xsl:template>
 
 <!-- TODO: pass list of tap xml files to document() in turn -->
@@ -273,8 +285,8 @@
 		<xsl:call-template name="output">
 			<xsl:with-param name="title"  select="$title"/>
 			<xsl:with-param name="css"    select="'css/tap.css'"/>
-			<xsl:with-param name="js"     select="'js/col.js js/expander.js'"/>
-			<xsl:with-param name="onload" select="'Colalign.init(r); Expander.init(r, &quot;thead&quot;, &quot;th&quot;, false, true);'"/>
+			<xsl:with-param name="js"     select="'js/col.js js/expander.js js/table.js'"/>
+			<xsl:with-param name="onload" select="'Colalign.init(r); Expander.init(r, &quot;dl&quot;, &quot;dt&quot;, false, true); Table.init(r);'"/>
 
 			<xsl:with-param name="body">
 				<h1>
@@ -301,10 +313,8 @@
 						/tap:tap" mode="overview"/>
 				</table>
 
-				<table class="details">
-					<xsl:apply-templates select="common:node-set($root)
-						/tap:tap" mode="details"/>
-				</table>
+				<xsl:apply-templates select="common:node-set($root)
+					/tap:tap" mode="details"/>
 			</xsl:with-param>
 		</xsl:call-template>
 	</xsl:template>

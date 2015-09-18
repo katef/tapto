@@ -37,6 +37,12 @@ h2 {
 .todo    { background-color: #cfc; border: dotted 1px #2b2; color: #1c1; }
 .skip    { background-color: #cfc; border: dotted 1px #2b2; color: #1c1; }
 
+table th.notok.table-sortable:hover   { background-color: #f99; border-color: #800; color: #800; }
+table th.ok.table-sortable:hover      { background-color: #9f9; border-color: #080; color: #080; }
+table th.some.table-sortable:hover    { background-color: #ff9; border-color: #880; color: #880; }
+table th.missing.table-sortable:hover { background-color: #9f9; border-color: #808; color: #808; }
+table th.skip.table-sortable:hover    { background-color: #9f9; border-color: #808; color: #808; }
+
 .na {
 	color: #bbb;
 }
@@ -122,34 +128,53 @@ table {
 	border-collapse: collapse;
 }
 
-table.details thead th:first-child:before {
-	min-width: 1.5em;
-	display: inline-block;
-	text-align: left;
+table.overview {
+	margin-bottom: 2em;
 }
 
-table.details thead.collapsed th:first-child:before {
+table.details {
+	margin: 0;
+	margin-bottom: -2px; /* fake border-collapse */
+}
+
+dl.details.expandable dt {
+	height: 2em;
+}
+
+dl.details.expandable dt a {
+	display: table-cell;
+text-align: center;
+	vertical-align: middle;
+	cursor: pointer;
+height: 2em;
+width: 3em;
+	color: #ccc;
+}
+
+dl.details.collapsed dt a:before {
 	content: "\25B6\A0"; /* > */
 }
 
-table.details thead.expanded th:first-child:before {
+dl.details.expanded dt a:before {
 	content: "\25BC\A0"; /* v */
 }
 
-table.details thead.expandable:hover th:first-child:before {
+dl.details.expandable {
+	margin: 0;
+}
+
+dl.details.expandable dt a:hover {
 	color: #000;
+	background-color: #eee;
 }
 
-table.details thead.expandable {
-	cursor: pointer;
+dl.details dd {
+	margin-left: 3em;
+	margin-top: -2em;
 }
 
-table.details thead.collapsed + tbody {
+dl.details.collapsed dd tbody {
 	display: none;
-}
-
-table.details th.summary {
-	text-align: center;
 }
 
 table.details th.summary:after {
@@ -231,21 +256,6 @@ table.index a.index:before {
 	content: "#";
 }
 
-/* stupid hack */
-/* XXX: makes no sense with the javascript expander,
-but would suit print (where everything is expanded)
-table.details tbody:after {
-	content: "\A0";
-	display: block;
-	line-height: 2em;
-	color: transparent;
-}
-*/
-
-table.details {
-	margin-top: 2em;
-}
-
 table.index th,
 table.index td {
 	border: none;
@@ -258,5 +268,36 @@ table.index th {
 table.index td a {
 	border: none;
 	background: none;
+}
+
+table th.table-sortable:hover {
+	cursor: pointer;
+}
+
+table th.table-notype {
+	border-color: darkred;
+	background-color: pink;
+}
+
+table th.table-sortable:after {
+	content: "\A0";
+	min-width: 1em;
+	text-align: right;
+}
+
+.expanded table th.table-descending:after {
+	content: "\25B2";
+}
+
+.expanded table th.table-ascending:after {
+	content: "\25BC";
+}
+
+.expanded table th.table-sortable:after {
+	padding-left: 1em;
+	color: inherit;
+	display: block;
+	float: right;
+	cursor: pointer;
 }
 
