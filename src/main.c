@@ -19,18 +19,18 @@
 extern char *optarg;
 extern int optind;
 
-static void
+static int
 escputc(int c, FILE *f)
 {
 	size_t i;
 
-	struct {
-		int in;
-		const char *out;
-	} esc[] = {
+	const struct {
+		int c;
+		const char *s;
+	} a[] = {
 		{ '&',  "&amp;"  },
-		{ '\'', "&#x27;" },
 		{ '\"', "&quot;" },
+		{ '\'', "&#x27;" },
 		{ '<',  "&#x3C;" },
 		{ '>',  "&#x3E;" },
 
@@ -38,34 +38,41 @@ escputc(int c, FILE *f)
 		{ '\n', "&#x0A;" },
 		{ '\r', "&#x0D;" },
 		{ '\t', "&#x09;" },
-		{ '\v', "$#x0B;" }
+		{ '\v', "&#x0B;" }
 	};
 
 	assert(f != NULL);
 
-	for (i = 0; i < sizeof esc / sizeof *esc; i++) {
-		if (esc[i].in == c) {
-			fputs(esc[i].out, f);
-			return;
+	for (i = 0; i < sizeof a / sizeof *a; i++) {
+		if (a[i].c == c) {
+			return fputs(a[i].s, f);
 		}
 	}
 
-	if (!isprint(c)) {
-		fprintf(f, "&#x%X;", (unsigned char) c);
-		return;
+	if (!isprint((unsigned char) c)) {
+		return fprintf(f, "&#x%X;", (unsigned char) c);
 	}
 
-	putc(c, f);
+	return putc(c, f);
 }
 
-static void
+static int
 escputs(const char *s, FILE *f)
 {
 	const char *p;
+	int r;
+
+	assert(f != NULL);
+	assert(s != NULL);
 
 	for (p = s; *p != '\0'; p++) {
-		escputc(*p, f);
+		r = escputc(*p, f);
+		if (r < 0) {
+			return -1;
+		}
 	}
+
+	return 0;
 }
 
 static void
