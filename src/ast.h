@@ -1,3 +1,9 @@
+/*
+ * Copyright 2015-2017 Katherine Flavel
+ *
+ * See LICENCE for the full copyright terms.
+ */
+
 #ifndef AST_H
 #define AST_H
 
