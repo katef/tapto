@@ -1,15 +1,11 @@
-CC  ?= gcc
+.include "../share/mk/top.mk"
 
-CFLAGS += -ansi -pedantic -Wall -Werror
+SRC += src/ast.c
+SRC += src/main.c
 
-all: tap
+PROG += tapto
 
-tap: main.o ast.o
-	${CC} -o tap main.o ast.o
-
-ast.o: ast.c
-	${CC} ${CFLAGS} -c -o ast.o ast.c
-
-main.o: main.c
-	${CC} ${CFLAGS} -c -o main.o main.c
+.for src in ${SRC:Msrc/*.c}
+${BUILD}/bin/tapto: ${BUILD}/${src:R}.o
+.endfor
 
