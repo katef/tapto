@@ -149,7 +149,7 @@ starttest(struct ast_test **head, const char *line, int *a, int b)
 static void
 usage(void)
 {
-	fprintf(stderr, "usage: tap2xml [-dq]\n");
+	fprintf(stderr, "usage: tap2xml [-d]\n");
 	fprintf(stderr, "       tap2xml [-h]\n");
 }
 
@@ -159,18 +159,15 @@ main(int argc, char *argv[])
 	struct ast_test *tests;
 	int a, b;
 	int fold;
-	int quiet;
 
-	fold  = 0;
-	quiet = 0;
+	fold = 0;
 
 	{
 		int c;
 
-		while (c = getopt(argc, argv, "dqh"), c != -1) {
+		while (c = getopt(argc, argv, "dh"), c != -1) {
 			switch (c) {
-			case 'd': fold  = 1; break;
-			case 'q': quiet = 1; break;
+			case 'd': fold = 1; break;
 
 			case 'h':
 				usage();
@@ -260,18 +257,6 @@ main(int argc, char *argv[])
 		gap(&tests, &a, b + 1);
 	}
 
-	if (!quiet) {
-		const struct ast_test *test;
-		int i;
-
-		/* TODO: print range style: 4,5,8..9 */
-		for (test = tests, i = 1; test != NULL; test = test->next, i++) {
-			if (test->status == AST_MISSING) {
-				fprintf(stderr, "missing test %d\n", i);
-			}
-		}
-	}
-
 	if (fold) {
 		struct ast_test *test, *next;
 
@@ -303,7 +288,7 @@ main(int argc, char *argv[])
 		}
 	}
 
-	/* TODO: for !quiet, warn about duplicate test names */
+	/* TODO: warn about duplicate test names */
 
 	xml_out(stdout, tests);
 
