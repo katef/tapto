@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
+#include <ctype.h>
 
 #include <strings.h>
 
@@ -24,6 +25,26 @@
 
 extern char *optarg;
 extern int optind;
+
+static void
+rtrim(char *s)
+{
+	char *p;
+
+	assert(s != NULL);
+
+	if (*s == '\0') {
+		return;
+	}
+
+	p = s + strlen(s) - 1;
+
+	assert(strlen(s) > 0);
+
+	while (p >= s && isspace((unsigned char) *p)) {
+		*p-- = '\0';
+	}
+}
 
 static void
 plan(const char *line, int *a, int *b)
@@ -184,6 +205,8 @@ main(int argc, char *argv[])
 			if (comment != NULL) {
 				*comment++ = '\0';
 			}
+
+			rtrim(line);
 
 			if (comment != NULL) {
 				comment += strspn(comment, " \t");
