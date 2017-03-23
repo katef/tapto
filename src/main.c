@@ -16,70 +16,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
-#include <ctype.h>
 
 #include <strings.h>
 
 #include "ast.h"
+#include "out.h"
 
 extern char *optarg;
 extern int optind;
-
-static int
-escputc(int c, FILE *f)
-{
-	size_t i;
-
-	const struct {
-		int c;
-		const char *s;
-	} a[] = {
-		{ '&',  "&amp;"  },
-		{ '\"', "&quot;" },
-		{ '\'', "&#x27;" },
-		{ '<',  "&#x3C;" },
-		{ '>',  "&#x3E;" },
-
-		{ '\f', "&#x0C;" },
-		{ '\n', "&#x0A;" },
-		{ '\r', "&#x0D;" },
-		{ '\t', "&#x09;" },
-		{ '\v', "&#x0B;" }
-	};
-
-	assert(f != NULL);
-
-	for (i = 0; i < sizeof a / sizeof *a; i++) {
-		if (a[i].c == c) {
-			return fputs(a[i].s, f);
-		}
-	}
-
-	if (!isprint((unsigned char) c)) {
-		return fprintf(f, "&#x%X;", (unsigned char) c);
-	}
-
-	return putc(c, f);
-}
-
-static int
-escputs(const char *s, FILE *f)
-{
-	const char *p;
-	int r;
-
-	assert(f != NULL);
-	assert(s != NULL);
-
-	for (p = s; *p != '\0'; p++) {
-		r = escputc(*p, f);
-		if (r < 0) {
-			return -1;
-		}
-	}
-
-	return 0;
-}
 
 static void
 plan(const char *line, int *a, int *b)
@@ -337,50 +281,7 @@ main(int argc, char *argv[])
 
 	/* TODO: for -v, warn about duplicate test names */
 
-	{
-		const struct ast_test *test;
-		const struct ast_line *line;
-		unsigned int n;
-
-		printf("<?xml version='1.0'?>\n");
-		printf("<tap xmlns='http://xml.elide.org/tap'>\n");
-
-		/* TODO: escape XML characters */
-		for (test = tests, n = 1; test != NULL; test = test->next, n++) {
-			printf("\t<test status='%s'",
-				ast_status(test->status));
-
-			printf(" n='%u'", n);
-
-			if (test->rep > 1) {
-				printf(" rep='%u'", test->rep);
-			}
-
-			if (test->name != NULL) {
-				printf(" name='");
-				escputs(test->name, stdout);
-				printf("'");
-			}
-
-			printf("%s>\n", test->line != NULL ? "" : "/");
-
-			if (test->line == NULL) {
-				continue;
-			}
-
-			printf("<![CDATA[");
-
-			for (line = test->line; line != NULL; line = line->next) {
-				printf("%s%s",
-					line->text,
-					line->next != NULL ? "\n" : "");
-			}
-
-			printf("]]></test>\n");
-		}
-
-		printf("</tap>\n");
-	}
+	xml_out(stdout, tests);
 
 	return 0;
 }

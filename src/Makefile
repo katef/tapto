@@ -2,6 +2,7 @@
 
 SRC += src/ast.c
 SRC += src/main.c
+SRC += src/xml.c
 
 PROG += tapto
 
