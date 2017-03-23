@@ -84,34 +84,37 @@ yaml(struct ast_test *test, const char *line)
 }
 
 static void
-missingtests(struct ast_test **head, int a, int b)
+gap(struct ast_test **head, int *a, int b)
 {
-	int i;
 	struct ast_test *new;
 
 	assert(head != NULL);
-	assert(a <= b);
+	assert(a != NULL);
+	assert(*a <= b);
 
-	for (i = a; i <= b; i++) {
+	while (*a < b) {
 		new = ast_test(head, AST_MISSING, NULL);
 		if (new == NULL) {
 			perror("ast_test");
 			exit(1);
 		}
+
+		*a += 1;
 	}
 }
 
 static void
-starttest(struct ast_test **head, const char *line, int a, int b)
+starttest(struct ast_test **head, const char *line, int *a, int b)
 {
 	struct ast_test *new;
 	enum ast_status status;
 	int i;
 	int n;
 
+	assert(a != NULL);
 	assert(head != NULL);
 	assert(line != NULL);
-	assert(b == -1 || a <= b);
+	assert(b == -1 || *a <= b);
 
 	if (0 == strncmp(line, "not ", 4)) {
 		line += 4;
@@ -127,20 +130,20 @@ starttest(struct ast_test **head, const char *line, int a, int b)
 
 	line += n;
 
-	if (i < a || (b != -1 && i > b)) {
-		fprintf(stderr, "error: test %d out of order; expected %d\n", i, a);
+	if (i < *a || (b != -1 && i > b)) {
+		fprintf(stderr, "error: test %d out of order; expected %d\n", i, *a);
 		exit(1);
 	}
 
-	if (a < i) {
-		missingtests(head, a, i - 1);
-	}
+	gap(head, a, i);
 
 	new = ast_test(head, status, line);
 	if (new == NULL) {
 		perror("ast_test");
 		exit(1);
 	}
+
+	*a += 1;
 }
 
 static void
@@ -239,8 +242,7 @@ main(int argc, char *argv[])
 
 			case 'n':
 			case 'o':
-				starttest(&tests, line, a, b);
-				a++;
+				starttest(&tests, line, &a, b);
 				continue;
 
 			case '\v': case '\t': case '\f':
@@ -255,10 +257,7 @@ main(int argc, char *argv[])
 			}
 		}
 
-		if (a + 1 < b) {
-			missingtests(&tests, a + 1, b);
-		}
-
+		gap(&tests, &a, b + 1);
 	}
 
 	if (!quiet) {
