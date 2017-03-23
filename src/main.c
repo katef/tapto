@@ -266,9 +266,9 @@ main(int argc, char *argv[])
 		int i;
 
 		/* TODO: print range style: 4,5,8..9 */
-		for (test = tests, i = 0; test != NULL; test = test->next, i++) {
+		for (test = tests, i = 1; test != NULL; test = test->next, i++) {
 			if (test->status == AST_MISSING) {
-				fprintf(stderr, "missing test %d\n", b - i);
+				fprintf(stderr, "missing test %d\n", i);
 			}
 		}
 	}
