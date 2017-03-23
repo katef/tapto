@@ -88,7 +88,7 @@ plan(const char *line, int *a, int *b)
 	assert(a != NULL);
 	assert(b != NULL);
 
-	if (*a != -1) {
+	if (*b != -1) {
 		fprintf(stderr, "syntax error: duplicate plan: %s\n", line);
 		exit(1);
 	}
