@@ -1,0 +1,35 @@
+
+Convert TAP format test results to XML and other things.
+
+The TAP format is conveniently simple for tests to print out by hand.
+See http://testanything.org/
+
+You get:
+
+ tapto       - A program that reads TAP format and outputs XML
+ share/xsl/* - XSLT transformations which convert that XML to other things
+
+Clone with submodules (contains required .mk files):
+
+ ; git clone --recursive https://github.com/katef/tapto.git
+
+To build and install:
+
+ ; pmake -r install
+
+You can override a few things:
+
+ ; CC=clang PREFIX=$HOME pmake -r install
+
+Building depends on:
+
+ * Any BSD make. This includes OpenBSD, FreeBSD and NetBSD make(1)
+   and sjg's portable bmake (also packaged as pmake).
+
+ * A C compiler. Any should do, but GCC and clang are best supported.
+
+ * ar, ld, and a bunch of other stuff you probably already have.
+
+
+Ideas, comments or bugs: kate@elide.org
+
